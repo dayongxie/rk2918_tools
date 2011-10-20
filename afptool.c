@@ -214,70 +214,38 @@ typedef struct
 static PackImage package_image;
 
 int
-parse_partitions(char **parms, int count)
+parse_partitions(char *str)
 {
-	int i;
+	char *nand, *parts, *token1;
+	char *part, *token2;
+	struct partition *p_part;
+	
+	nand = strtok_r(str, ":", &token1);
+	parts = strtok_r(NULL, ":", &token1);
 
-	int mtd_id = 0;
-	partition_count = 0;
+	if (parts)
+	{
+		part = strtok_r(parts, ",", &token2);
 
-	for (i = 1; i < count; i++) {
-		if (sscanf(parms[i], "mtd_id=%s", mtd_id) >= 1)
-			continue;
-		if (sscanf(parms[i], "%s 0x%x:0x%x:%s", ) == 4 ||
-			sscanf(parms[i], "%s 0x%x:0x%x", ) == 3) {
+		for (; part; part = strtok_r(NULL, ",", &token2) )
+		{
+			p_part = &(package_image.partitions[package_image.num_partition]);
+			if (3 != sscanf(part, "0x%08x@0x%08x(%s)", &p_part->size, &p_part->start, p_part->name))
+			{
+				if (2 !=  sscanf(part, "-@0x%08x(%s)", &p_part->start, p_part->name))
+					continue;
+				p_part->size = 0;
+			}
+
+			package_image.num_partition++;
 		}
 	}
-
+	
 	return 0;
 }
-
-int
-parse_machineinfo(char **parms, int count)
-{
-	int i;
-
-	for (i = 1; i < count; i++) {
-		if (sscanf(parms[i], "manufacturer=%s", manufacturer) == 1)
-			continue;
-		if (sscanf(parms[i], "machine_model=%s", machine_model) == 1)
-			continue;
-		if (sscanf(parms[i], "magic=0x%x", magic) == 1)
-			continue;
-		if (sscanf(parms[i], "machine_id=%d", machine_id) == 1)
-			continue;
-	}
-
-	return 0;
-}
-
-int
-parse_ram(char **parms, int count)
-{
-	int i;
-
-	ram_size =
-	base_addr =
-	atag_addr =
-	krnl_addr = -1;
-
-	for (i = 1; i < count; i++) {
-		if (sscanf(parms[i], "size=%d", &ram_size) == 1)
-			continue;
-		if (sscanf(parms[i], "base_addr=0x%x", &base_addr) == 1)
-			continue;
-		if (sscanf(parms[i], "atag_addr=0x%x", &atag_addr) == 1)
-			continue;
-		if (sscanf(parms[i], "krnl_addr=0x%x", &krnl_addr) == 1)
-			continue;
-	}
-
-	return 0;
-}
-
 
 int 
-action_parse_key(key, value)
+action_parse_key(char *key, char *value)
 {
 	if ( strcmp(key, "FIRMWARE_VER") == 0 )
 	{
@@ -288,9 +256,42 @@ action_parse_key(key, value)
 	else if ( strcmp(key, "MACHINE_MODEL") == 0 )
 	{
 		package_image.machine_model[sizeof(package_image.machine_model) - 1] = 0;
-		strncpy(package_image.machine_model, 
+		strncpy(package_image.machine_model, value, sizeof(package_image.machine_model));
+		if (package_image.machine_model[sizeof(package_image.machine_model) - 1])
+			return -1;
 	}
-	
+	else if ( strcmp(key, "MACHINE_ID") ==  0 )
+	{
+		package_image.machine_id[sizeof(package_image.machine_id) - 1] = 0;
+		strncpy(package_image.machine_id,  value, sizeof(package_image.machine_id));
+		if (package_image.machine_id[sizeof(package_image.machine_id) - 1])
+			return -1;
+	}
+	else if ( strcmp(key, "MANUFACTURER") == 0 )
+	{
+		package_image.manufacturer[sizeof(package_image.manufacturer) - 1] = 0;
+		strncpy(package_image.manufacturer, value, sizeof(package_image.manufacturer));
+		if (package_image.manufacturer[sizeof(package_image.manufacturer) - 1])
+			return -1;
+	}
+	else if ( strcmp(key, "CMDLINE") ==  0)
+	{
+		char *param, *token1;
+		char *param_key, *param_value, *token2;
+		param =  strtok_r(value, " ", &token1);
+		
+		while (param)
+		{
+			param_key = strtok_r(param, "=", &token2);
+			param_value = strtok_r(NULL, "=", &token2);
+
+			if (strcmp(param_key, "mtdparts") == 0)
+			{
+				parse_partitions(param_value);
+			}
+			param = strtok_r(NULL, " ", &token1);
+		}
+	}
 	return 0;
 }
 
@@ -325,8 +326,8 @@ parse_parameter(const char *fname)
 		if (*startp == '#' || *startp == 0)
 			continue;
 
-		key = strtok_r(startp, ":", &saveptr);
-		value = strtok_r(startp, ":", &saveptr);
+		key = strtok_r(startp, ":", &tokenptr);
+		value = strtok_r(NULL, ":", &tokenptr);
 		
 		if (!key || !value)
 			break;
