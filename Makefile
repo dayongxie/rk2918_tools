@@ -1,0 +1,2 @@
+afptool : afptool.o
+
