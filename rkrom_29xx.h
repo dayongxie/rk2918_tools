@@ -9,7 +9,8 @@
 #define RK_ROM_HEADER_CODE "RKFWf"
 struct _rkfw_header
 {
-	char	head_code[6];	// 固定为"RKFWf"
+	char	head_code[4];	// 固定为"RKFW"
+	unsigned short head_len;
 	unsigned int	version;	// ROM_VERSION()
 	unsigned int	code;
 
@@ -29,12 +30,12 @@ struct _rkfw_header
 	unsigned int	image_offset;		//image偏移
 	unsigned int	image_length;		//image长度
 
-	int		unknown1;	
-	int		unknown2;
-	int		unknown3;
-	int		unknown4;
+	unsigned int unknown1;
+	unsigned int unknown2;
+	unsigned int system_fstype;
+	unsigned int backup_endpos;
 	
-	char		reserved[0x2D];
+	unsigned char reserved[0x2D];
 };
 
 #pragma pack()
