@@ -99,9 +99,9 @@ int pack_rom(const char *loader_filename, const char *image_filename, const char
 	rom_header.year = local_time.tm_year + 1900;
 	rom_header.month = local_time.tm_mon + 1;
 	rom_header.day = local_time.tm_mday;
-	rom_header.hour = local_time.tm_hour + 1;
-	rom_header.minute = local_time.tm_min + 1;
-	rom_header.second = local_time.tm_sec + 1;
+	rom_header.hour = local_time.tm_hour;
+	rom_header.minute = local_time.tm_min
+	rom_header.second = local_time.tm_sec;
 
 	FILE *fp = fopen(outfile, "wb+");
 	if (!fp)
