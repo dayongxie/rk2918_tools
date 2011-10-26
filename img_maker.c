@@ -100,7 +100,7 @@ int pack_rom(const char *loader_filename, const char *image_filename, const char
 	rom_header.month = local_time.tm_mon + 1;
 	rom_header.day = local_time.tm_mday;
 	rom_header.hour = local_time.tm_hour;
-	rom_header.minute = local_time.tm_min
+	rom_header.minute = local_time.tm_min;
 	rom_header.second = local_time.tm_sec;
 
 	FILE *fp = fopen(outfile, "wb+");
