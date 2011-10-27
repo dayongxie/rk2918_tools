@@ -1,1 +1,14 @@
 参考 http://gitorious.org/rockchip-android/tools
+
+开发环境: git， gcc， 开发库libssl-dev（用于md5校验）  
+apt-get install  git gcc libssl-dev
+
+获取源码并编译
+git clone git://github.com/jhonxie/rk2918_tools.git  
+cd rk2918_tools
+make
+  
+编译的完成或者下载的工具包解压之后，将得到3个二进制程序：  
+img_unpack  固件新格式转旧格式   
+img_maker	固件旧格式打包成新格式  
+afptool		旧格式固件打包解包工具  
