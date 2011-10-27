@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <time.h>
 #include "rkrom_29xx.h"
+#include "md5.h"
 
 int export_data(const char *filename, unsigned int offset, unsigned int length, FILE *fp)
 {
@@ -37,6 +38,43 @@ export_end:
 	return -1;
 }
 
+int check_md5sum(FILE *fp)
+{
+	unsigned char buf[1024];
+	unsigned char md5sum[16];
+	size_t length;
+	MD5_CTX md5_ctx;
+	int i;
+
+	fseek(fp, 0, SEEK_END);
+	length = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+
+	MD5_Init(&md5_ctx);
+	length -= 32;
+	while (length > 0)
+	{
+		int readlen = length < sizeof(buf) ? length : sizeof(buf);
+		readlen = fread(buf, 1, readlen, fp);
+		length -= readlen;
+		MD5_Update(&md5_ctx, buf, readlen);
+	}
+
+	MD5_Final(md5sum, &md5_ctx);
+	fread(buf, 1, 32, fp);
+
+	for (i = 0; i < 16; ++i)
+	{
+		sprintf(buf + 32 + i * 2, "%02x", md5sum[i]);
+	}
+
+	if (strncasecmp(buf, buf + 32, 32) == 0)
+		return 0;	
+
+	return -1;
+}
+
 int unpack_rom(const char* filepath, const char* dstfile)
 {
 	struct _rkfw_header rom_header;
@@ -48,6 +86,16 @@ int unpack_rom(const char* filepath, const char* dstfile)
 		goto unpack_fail;
 	}
 
+
+	printf("checking md5sum....");
+	if (check_md5sum(fp) != 0)
+	{
+		printf("Not match!\n");
+		goto unpack_fail;
+	}
+	printf("OK\n");
+
+	fseek(fp, 0, SEEK_SET);
 	if (1 != fread(&rom_header, sizeof(rom_header), 1, fp))
 		goto unpack_fail;
 
