@@ -38,21 +38,16 @@ export_end:
 	return -1;
 }
 
-int check_md5sum(FILE *fp)
+int check_md5sum(FILE *fp, size_t length)
 {
 	unsigned char buf[1024];
 	unsigned char md5sum[16];
-	size_t length;
 	MD5_CTX md5_ctx;
 	int i;
 
-	fseek(fp, 0, SEEK_END);
-	length = ftell(fp);
 	fseek(fp, 0, SEEK_SET);
 
-
 	MD5_Init(&md5_ctx);
-	length -= 32;
 	while (length > 0)
 	{
 		int readlen = length < sizeof(buf) ? length : sizeof(buf);
@@ -87,14 +82,6 @@ int unpack_rom(const char* filepath, const char* dstfile)
 	}
 
 
-	printf("checking md5sum....");
-	if (check_md5sum(fp) != 0)
-	{
-		printf("Not match!\n");
-		goto unpack_fail;
-	}
-	printf("OK\n");
-
 	fseek(fp, 0, SEEK_SET);
 	if (1 != fread(&rom_header, sizeof(rom_header), 1, fp))
 		goto unpack_fail;
@@ -115,6 +102,15 @@ int unpack_rom(const char* filepath, const char* dstfile)
 		rom_header.hour, rom_header.minute, rom_header.second);
 
 	printf("chip: %x\n", rom_header.chip);
+
+	printf("checking md5sum....");
+	fflush(stdout);
+	if (check_md5sum(fp, rom_header.image_offset + rom_header.image_length) != 0)
+	{
+		printf("Not match!\n");
+		goto unpack_fail;
+	}
+	printf("OK\n");
 
 	//export_data(loader_filename, rom_header.loader_offset, rom_header.loader_length, fp);
 	export_data(dstfile, rom_header.image_offset, rom_header.image_length, fp);
