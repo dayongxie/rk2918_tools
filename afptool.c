@@ -110,7 +110,7 @@ int unpack_update(const char* srcfile, const char* dstdir) {
 		goto unpack_fail;
 	}
 
-	if (check_update(buf, file_len) == -1)
+	if (check_update(buf, header.length + 4) == -1)
 		goto unpack_fail;
 
 	printf("------- UNPACK -------\n");
