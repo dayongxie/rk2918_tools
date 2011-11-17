@@ -168,7 +168,7 @@ int unpack_update(const char* srcfile, const char* dstdir) {
 
 struct pack_part {
 	char name[32];
-	char filename[32];
+	char filename[60];
 	unsigned int nand_addr;
 	unsigned int nand_size;
 };

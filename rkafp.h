@@ -3,8 +3,7 @@
 
 struct update_part {
 	char name[32];
-	char filename[32];
-	char reserved[28];
+	char filename[60];
 	unsigned int nand_size;
 	unsigned int pos;
 	unsigned int nand_addr;

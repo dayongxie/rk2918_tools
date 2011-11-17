@@ -1,5 +1,5 @@
 CFLAGS := -DUSE_OPENSSL
-LDFLAGS := -lssl
+LDFLAGS := -lssl -lcrypto
 #CFLAGS := -DUSE_GCRYPT
 #LDFLAGS := -lgcrypt
 
