@@ -97,7 +97,7 @@ static uint32_t _t[256] = {
 
 #define RKCRC(crc, buf, size)						\
 do {									\
-	ssize_t _s = (size);						\
+	size_t _s = (size);						\
 	uint8_t *_b = (uint8_t *)(buf);					\
 	while (_s-- > 0)						\
 		(crc) = ((crc) << 8) ^ _t[((crc) >> 24) ^ *_b++];	\
