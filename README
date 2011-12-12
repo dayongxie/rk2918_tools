@@ -1,14 +1,17 @@
-参考 http://gitorious.org/rockchip-android/tools
+This project is based on http://gitorious.org/rockchip-android/tools
 
-开发环境: git， gcc， 开发库libssl-dev（用于md5校验）  
+build required: git， gcc， libssl-dev（for md5 checksum）  
 apt-get install  git gcc libssl-dev
 
-获取源码并编译
+Get source code & build
 git clone git://github.com/jhonxie/rk2918_tools.git  
 cd rk2918_tools
 make
-  
-编译的完成或者下载的工具包解压之后，将得到3个二进制程序：  
+
+Several executable bins are built:
 img_unpack  固件新格式转旧格式   
 img_maker	固件旧格式打包成新格式  
 afptool		旧格式固件打包解包工具  
+mkkrnlimg  pack kernel or ramdisk to add KRNL head and CRC checksum
+
+PS: the rkflash tool not implemented in this project, you can find it here: http://forum.xda-developers.com/showthread.php?t=1286305
