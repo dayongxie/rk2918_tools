@@ -127,6 +127,7 @@ int pack_rom(const char *loader_filename, const char *image_filename, const char
 	printf("chip: %x\n", rom_header.chip);
 */
 	fseek(fp, rom_header.loader_offset, SEEK_SET);
+	fprintf(stderr, "generate image...\n");
 	rom_header.loader_length = import_data(loader_filename, &loader_header, sizeof(loader_header), fp);
 	
 	if (rom_header.loader_length <  sizeof(loader_header))
@@ -163,8 +164,10 @@ int pack_rom(const char *loader_filename, const char *image_filename, const char
 	if (1 != fwrite(&rom_header, sizeof(rom_header), 1, fp))
 		goto pack_fail;
 
+	fprintf(stderr, "append md5sum...\n");
 	append_md5sum(fp);
 	fclose(fp);
+	fprintf(stderr, "success!\n");
 
 	return 0;
 pack_fail:
