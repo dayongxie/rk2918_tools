@@ -38,6 +38,23 @@ struct _rkfw_header
 	unsigned char reserved[0x2D];
 };
 
+struct bootloader_header {
+	char magic[4];
+	unsigned short head_len;
+	unsigned int version;
+	unsigned int unknown1;
+
+	unsigned short build_year;
+	unsigned char build_month;
+	unsigned char build_day;
+	unsigned char build_hour;
+	unsigned char build_minute;
+	unsigned char build_second;
+	/* 104 (0x68) bytes */
+
+	unsigned int chip;
+};
+
 #pragma pack()
 
 #endif // RKROM_29XX_H

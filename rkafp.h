@@ -32,20 +32,4 @@ struct param_header {
 	unsigned int length;
 };
 
-struct bootloader_header {
-	char magic[6];
-	unsigned int version;
-	unsigned int unknown1;
-
-	unsigned short build_year;
-	unsigned char build_month;
-	unsigned char build_day;
-	unsigned char build_hour;
-	unsigned char build_minute;
-	unsigned char build_second;
-	/* 104 (0x68) bytes */
-
-	unsigned int chip;
-};
-
 #endif // _RKAFP_H

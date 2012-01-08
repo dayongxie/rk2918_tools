@@ -1,10 +1,14 @@
 CC=gcc
 CFLAGS := -g -O3 -DUSE_OPENSSL
-LDFLAGS := -lssl -lcrypto
+LDLIBS := -lssl -lcrypto
 #CFLAGS := -DUSE_GCRYPT
-#LDFLAGS := -lgcrypt
+#LDLIBS := -lgcrypt
 
-all: afptool img_unpack img_maker mkkrnlimg
+TARGETS := afptool img_unpack img_maker mkkrnlimg
+all: ${TARGETS}
+
+clean:
+	rm *.o ${TARGETS}
 #afptool : afptool.o
 #img_unpack : img_unpack.o
 #img_maker : img_maker.o
