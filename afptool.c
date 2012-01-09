@@ -477,7 +477,7 @@ int import_package(FILE *ofp, struct update_part *pack, const char *path)
 	{
 		unsigned int crc;
 		struct param_header *header = (struct param_header*)buf;
-		strcpy(header->magic, "PARM");
+		memcpy(header->magic, "PARM", sizeof(header->magic));
 
 		readlen = fread(buf + sizeof(*header), 1, sizeof(buf) - 12, ifp);
 		header->length = readlen;
@@ -594,7 +594,7 @@ int pack_update(const char* srcdir, const char* dstfile) {
 		import_package(fp, &header.parts[i], buf);
 	}
 
-	strcpy(header.magic, "RKAF");
+	memcpy(header.magic, "RKAF", sizeof(header.magic));
 	strcpy(header.manufacturer, package_image.manufacturer);
 	strcpy(header.model, package_image.machine_model);
 	strcpy(header.id, package_image.machine_id);
