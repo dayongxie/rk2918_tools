@@ -23,7 +23,6 @@ int pack_krnl(FILE *fp_in, FILE *fp_out)
 		0
 	};
 
-	size_t length = 0;
 	unsigned int crc = 0;
 
 	fwrite(&header, sizeof(header), 1, fp_out);
@@ -46,7 +45,7 @@ int pack_krnl(FILE *fp_in, FILE *fp_out)
 	printf("%04X\n", crc);
 
 	return 0;
-fail:
+//fail:
 	fprintf(stderr, "FAIL\n");
 	return -1;
 }

@@ -106,7 +106,7 @@ int pack_rom(const char *loader_filename, const char *image_filename, const char
 	FILE *fp = fopen(outfile, "wb+");
 	if (!fp)
 	{
-		fprintf(stderr, "Can't open file %s\n, reason: ", outfile, strerror(errno));
+		fprintf(stderr, "Can't open file %s\n, reason: %s\n", outfile, strerror(errno));
 		goto pack_fail;
 	}
 
@@ -178,9 +178,6 @@ pack_fail:
 
 int main(int argc, char **argv)
 {
-	int i;
-	char *cp;
-
 	if (argc == 4)
 	{
 		pack_rom(argv[1], argv[2], argv[3]);

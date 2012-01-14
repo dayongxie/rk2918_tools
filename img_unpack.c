@@ -40,7 +40,7 @@ export_end:
 
 int check_md5sum(FILE *fp, size_t length)
 {
-	unsigned char buf[1024];
+	char buf[1024];
 	unsigned char md5sum[16];
 	MD5_CTX md5_ctx;
 	int i;
@@ -57,7 +57,9 @@ int check_md5sum(FILE *fp, size_t length)
 	}
 
 	MD5_Final(md5sum, &md5_ctx);
-	fread(buf, 1, 32, fp);
+
+	if (32 != fread(buf, 1, 32, fp))
+		return -1;
 
 	for (i = 0; i < 16; ++i)
 	{
@@ -77,7 +79,7 @@ int unpack_rom(const char* filepath, const char* dstfile)
 	FILE *fp = fopen(filepath, "rb");
 	if (!fp)
 	{
-		fprintf(stderr, "Can't open file %s\n, reason: ", filepath, strerror(errno));
+		fprintf(stderr, "Can't open file %s\n, reason: %s\n", filepath, strerror(errno));
 		goto unpack_fail;
 	}
 
@@ -125,9 +127,6 @@ unpack_fail:
 
 int main(int argc, char **argv)
 {
-	int i;
-	char *cp;
-
 	if (argc != 3)
 	{
 		fprintf(stderr, "usage: %s <source> <destination>\n", argv[0]);
