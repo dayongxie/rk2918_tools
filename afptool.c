@@ -281,13 +281,12 @@ int action_parse_key(char *key, char *value) {
 			{
 				*param_value = '\0';
 				param_value++;
-			} else {
-				continue;
+
+				if (strcmp(param_key, "mtdparts") == 0) {
+					parse_partitions(param_value);
+				}
 			}
 
-			if (strcmp(param_key, "mtdparts") == 0) {
-				parse_partitions(param_value);
-			}
 			param = strtok_r(NULL, " ", &token1);
 		}
 	}
