@@ -197,12 +197,11 @@ typedef struct {
 static PackImage package_image;
 
 int parse_partitions(char *str) {
-	char *nand, *parts;
+	char *parts;
 	char *part, *token1 = NULL, *ptr;
 	struct partition *p_part;
 	int i;
 
-	nand = str;
 	parts = strchr(str, ':');
 
 	if (parts) {
@@ -282,13 +281,12 @@ int action_parse_key(char *key, char *value) {
 			{
 				*param_value = '\0';
 				param_value++;
-			} else {
-				continue;
+
+				if (strcmp(param_key, "mtdparts") == 0) {
+					parse_partitions(param_value);
+				}
 			}
 
-			if (strcmp(param_key, "mtdparts") == 0) {
-				parse_partitions(param_value);
-			}
 			param = strtok_r(NULL, " ", &token1);
 		}
 	}
@@ -476,7 +474,7 @@ int import_package(FILE *ofp, struct update_part *pack, const char *path)
 
 	if (strcmp(pack->name, "parameter") == 0)
 	{
-		unsigned int crc;
+		unsigned int crc = 0;
 		struct param_header *header = (struct param_header*)buf;
 		memcpy(header->magic, "PARM", sizeof(header->magic));
 
