@@ -82,7 +82,7 @@ int unpack_update(const char* srcfile, const char* dstdir) {
 	struct update_header header;
 	unsigned int crc = 0;
 
-	fp = fopen(srcfile, "r");
+	fp = fopen(srcfile, "rb");
 	if (!fp) {
 		fprintf(stderr, "can't open file \"%s\": %s\n", srcfile,
 				strerror(errno));
@@ -470,7 +470,7 @@ int import_package(FILE *ofp, struct update_part *pack, const char *path)
 	size_t readlen;
 
 	pack->pos = ftell(ofp);
-	ifp = fopen(path, "r");
+	ifp = fopen(path, "rb");
 	if (!ifp)
 		return -1;
 
@@ -549,7 +549,7 @@ int pack_update(const char* srcdir, const char* dstfile) {
 	if (get_packages(buf))
 		return -1;
 
-	fp = fopen(dstfile, "w+");
+	fp = fopen(dstfile, "wb+");
 	if (!fp)
 	{
 		printf("Can't open file \"%s\": %s\n", dstfile, strerror(errno));

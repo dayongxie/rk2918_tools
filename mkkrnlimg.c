@@ -116,14 +116,14 @@ int main(int argc, char **argv)
 		fprintf(stderr, "usage: %s [-a|-r] <input> <output>\n", argv[0]);
 	}
 
-	fp_in = fopen(argv[2], "r");
+	fp_in = fopen(argv[2], "rb");
 	if (!fp_in)
 	{
 		fprintf(stderr, "can't open input file '%s': %s\n", argv[2], strerror(errno));
 		return 1;
 	}
 
-	fp_out = fopen(argv[3], "w");
+	fp_out = fopen(argv[3], "wb");
 	if (!fp_out)
 	{
 		fprintf(stderr, "can't open output file '%s': %s\n", argv[3], strerror(errno));
